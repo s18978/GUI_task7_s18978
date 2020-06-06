@@ -16,23 +16,39 @@ namespace MvcMovie
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
+            Environment = env;
             Configuration = configuration;
         }
 
         public IConfiguration Configuration { get; }
+        public IWebHostEnvironment Environment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
 
             services.AddDbContext<MvcMovieContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("MvcMovieContext")));
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("MvcMovieContext"));
+                // var connectionString = Configuration.GetConnectionString("MvcMovieContext");
+                //
+                // if (Environment.IsDevelopment())
+                // {
+                //     options.UseSqlite(connectionString);
+                // }
+                // else
+                // {
+                //     options.UseSqlServer(connectionString);
+                // }
+            });
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+
+// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
